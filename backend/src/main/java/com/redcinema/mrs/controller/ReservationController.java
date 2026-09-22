@@ -47,9 +47,9 @@ public class ReservationController {
 
         Reservation reservation = reservationService.createReservation(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(APIResponseDTO.builder()
-                .message("Reservation created with id: " + reservation.getReservationId())
-                .data(reservation)
-                .build());
+        .message("Reservation created with id: " + reservation.getReservationId())
+        .data(reservation.getReservationId())
+        .build());
     }
 
     // ── PUT /api/reservations/cancel/{reservationId}  [owner | SUPER_ADMIN] ───

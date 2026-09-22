@@ -36,7 +36,12 @@ export const authService = {
    * Decodes a JWT token (without verification, for client-side claims).
    * The backend verifies the signature — this is for UI role-checking only.
    */
-  decodeToken(token: string): { sub: string; ROLES: Array<{ authority: string }>; exp: number } | null {
+  decodeToken(token: string): {
+  sub: string;
+  userId: number;
+  ROLES: Array<{ authority: string }>;
+  exp: number;
+  } | null {
     try {
       const payload = token.split(".")[1];
       const decoded = JSON.parse(atob(payload));

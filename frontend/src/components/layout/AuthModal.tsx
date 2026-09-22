@@ -126,35 +126,24 @@ export function AuthModal() {
         });
       }
 
-      // Decode token to get username, then fetch user profile
       const decoded = authService.decodeToken(token);
-      if (decoded?.sub) {
-        try {
-          // Fetch full user from backend using username
-          const users = await api.get(`/api/users/all?page=0&pageSize=100`);
-          const allUsers = users.data.pageData as Array<{ username: string; userId: number; firstName: string; lastName: string; userEmail: string; userStatus: string; userRole: string }>;
-          const currentUser = allUsers.find((u) => u.username === decoded.sub);
-          if (currentUser) {
-            setAuth(currentUser as any, token);
-          }
-        } catch {
-          // Fallback: store minimal user data from token
-          setAuth(
-            {
-              userId: 0,
-              username: decoded.sub,
-              firstName: form.firstName || decoded.sub,
-              lastName: form.lastName || "",
-              userEmail: form.userEmail || "",
-              userStatus: "ACTIVE",
-              userRole: (decoded.ROLES?.[0]?.authority as any) || "ROLE_USER",
-              userCreatedAt: new Date().toISOString(),
-              userUpdatedAt: new Date().toISOString(),
-            },
-            token
-          );
-        }
-      }
+
+if (decoded?.sub && decoded?.userId) {
+  setAuth(
+    {
+      userId: decoded.userId,
+      username: decoded.sub,
+      firstName: form.firstName || decoded.sub,
+      lastName: form.lastName || "",
+      userEmail: form.userEmail || "",
+      userStatus: "ACTIVE",
+      userRole: (decoded.ROLES?.[0]?.authority as any) || "ROLE_USER",
+      userCreatedAt: new Date().toISOString(),
+      userUpdatedAt: new Date().toISOString(),
+    },
+    token
+  );
+}
 
       toast.success(
         isLogin
