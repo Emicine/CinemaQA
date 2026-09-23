@@ -7,14 +7,29 @@ import type { Movie, Show } from "@/types";
 import { Play, Plus, Clock, Calendar, Star } from "lucide-react";
 
 const GENRE_BG: Record<string, string> = {
-  ACTION: "linear-gradient(135deg, #870000, #190a05)",
-  THRILLER: "linear-gradient(135deg, #0f0c29, #302b63)",
-  HORROR: "linear-gradient(135deg, #000, #1a0000)",
-  COMEDY: "linear-gradient(135deg, #f7971e, #ffd200)",
-  DRAMA: "linear-gradient(135deg, #1f4037, #99f2c8)",
-  ROMANCE: "linear-gradient(135deg, #834d9b, #d04ed6)",
-  SCIENCE_FICTION: "linear-gradient(135deg, #2d1b69, #11998e)",
-  SUSPENSE: "linear-gradient(135deg, #141e30, #243b55)",
+  ACTION:
+    "linear-gradient(135deg, #254896 0%, #07152F 100%)",
+
+  THRILLER:
+    "linear-gradient(135deg, #324B96 0%, #091630 100%)",
+
+  HORROR:
+    "linear-gradient(135deg, #101D3A 0%, #030916 100%)",
+
+  COMEDY:
+    "linear-gradient(135deg, #B8862C 0%, #35250B 100%)",
+
+  DRAMA:
+    "linear-gradient(135deg, #254B67 0%, #0A203A 100%)",
+
+  ROMANCE:
+    "linear-gradient(135deg, #493A79 0%, #161535 100%)",
+
+  SCIENCE_FICTION:
+    "linear-gradient(135deg, #1C4C79 0%, #07152F 100%)",
+
+  SUSPENSE:
+    "linear-gradient(135deg, #214A78 0%, #07152F 100%)",
 };
 
 interface MoviePageProps {
@@ -54,7 +69,7 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
       {/* Hero section */}
       <div className="relative min-h-[65vh] flex items-end overflow-hidden">
         {/* BG */}
-        <div className="absolute inset-0" style={{ background: "#141414" }}>
+        <div className="absolute inset-0" style={{ background: "#07152F" }}>
           <div
             className="absolute inset-0 opacity-60"
             style={{ backgroundImage: GENRE_BG[movie.movieGenre] ?? GENRE_BG.DRAMA }}
@@ -64,9 +79,12 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
         {/* Gradient overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-background" />
         <div
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(to right, #141414 0%, transparent 40%)" }}
-        />
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to right, #07152F 0%, rgba(7,21,47,0.75) 35%, transparent 70%)",
+        }}
+      />
 
         {/* Content */}
         <div className="relative z-10 px-12 pb-12 flex items-end gap-10 w-full">
@@ -120,9 +138,9 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
             <div className="flex gap-3">
               <Link
                 href={`#shows`}
-                className="bg-primary hover:bg-primary-hover text-white px-7 py-3 rounded font-semibold text-sm flex items-center gap-2 transition-all hover:scale-105"
+                className="bg-primary hover:bg-primary-hover text-[#07152F] px-7 py-3 rounded font-semibold text-sm flex items-center gap-2 transition-all hover:scale-105"
               >
-                <Play size={16} fill="white" /> Book Tickets
+                <Play size={16} fill="#07152F" /> Book Tickets
               </Link>
               <button className="bg-white/10 hover:bg-white/20 text-white px-7 py-3 rounded font-semibold text-sm flex items-center gap-2 transition-all"
                 style={{ border: "2px solid rgba(255,255,255,0.3)" }}>

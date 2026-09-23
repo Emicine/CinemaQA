@@ -10,20 +10,25 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#E50914",
-          hover: "#C11119",
+          DEFAULT: "#F4C95D",
+          hover: "#FFD978",
         },
-        secondary: "#564D4D",
-        neutral: "#808080",
-        background: "#141414",
-        surface: "#1F1F1F",
-        "surface-2": "#2A2A2A",
+
+        secondary: "#4C6FFF",
+        neutral: "#7183A8",
+
+        background: "#07152F",
+        surface: "#0D2147",
+        "surface-2": "#14305D",
+
         "text-primary": "#FFFFFF",
-        "text-secondary": "#999999",
-        border: "#333333",
-        success: "#46D369",
-        warning: "#E6B616",
-        error: "#E50914",
+        "text-secondary": "#AAB9D6",
+
+        border: "#263F6B",
+
+        success: "#4FD18B",
+        warning: "#F4C95D",
+        error: "#FF6B6B",
       },
       fontFamily: {
         display: ["var(--font-bebas)", "sans-serif"],

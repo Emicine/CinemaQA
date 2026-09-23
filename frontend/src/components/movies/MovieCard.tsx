@@ -9,14 +9,29 @@ import clsx from "clsx";
 
 // Deterministic gradient per movie based on genre
 const GENRE_GRADIENTS: Record<string, string> = {
-  ACTION: "linear-gradient(135deg, #870000 0%, #190a05 100%)",
-  THRILLER: "linear-gradient(135deg, #0f0c29 0%, #302b63 100%)",
-  HORROR: "linear-gradient(135deg, #000000 0%, #1a0000 100%)",
-  COMEDY: "linear-gradient(135deg, #f7971e 0%, #ffd200 100%)",
-  SUSPENSE: "linear-gradient(135deg, #141e30 0%, #243b55 100%)",
-  DRAMA: "linear-gradient(135deg, #1f4037 0%, #99f2c8 100%)",
-  ROMANCE: "linear-gradient(135deg, #834d9b 0%, #d04ed6 100%)",
-  SCIENCE_FICTION: "linear-gradient(135deg, #2d1b69 0%, #11998e 100%)",
+  ACTION:
+    "linear-gradient(135deg, #254896 0%, #07152F 100%)",
+
+  THRILLER:
+    "linear-gradient(135deg, #263E7A 0%, #091630 100%)",
+
+  HORROR:
+    "linear-gradient(135deg, #101D3A 0%, #030916 100%)",
+
+  COMEDY:
+    "linear-gradient(135deg, #B8862C 0%, #35250B 100%)",
+
+  SUSPENSE:
+    "linear-gradient(135deg, #214A78 0%, #07152F 100%)",
+
+  DRAMA:
+    "linear-gradient(135deg, #254B67 0%, #0A203A 100%)",
+
+  ROMANCE:
+    "linear-gradient(135deg, #493A79 0%, #161535 100%)",
+
+  SCIENCE_FICTION:
+    "linear-gradient(135deg, #1C4C79 0%, #07152F 100%)",
 };
 
 interface MovieCardProps {
@@ -94,7 +109,13 @@ export function MovieCard({ movie, rank }: MovieCardProps) {
           )}
 
           {/* Gradient overlay on poster to ensure text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
+          <div
+            className="absolute inset-0 z-10"
+            style={{
+              background:
+                "linear-gradient(to top, rgba(3, 9, 22, 0.9) 0%, transparent 65%)",
+            }}
+          />
 
           {/* Bottom info */}
           <div className="absolute bottom-0 left-0 right-0 p-3 z-20">

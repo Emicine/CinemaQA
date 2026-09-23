@@ -7,14 +7,29 @@ import { Play, Plus, Info } from "lucide-react";
 import type { Movie } from "@/types";
 
 const GENRE_BG: Record<string, string> = {
-  ACTION: "radial-gradient(ellipse at 70% 40%, rgba(135,0,0,0.5), transparent 60%), radial-gradient(ellipse at 20% 70%, rgba(30,10,10,0.8), transparent 70%)",
-  THRILLER: "radial-gradient(ellipse at 70% 40%, rgba(30,20,80,0.5), transparent 60%)",
-  HORROR: "radial-gradient(ellipse at 60% 50%, rgba(10,0,0,0.7), transparent 60%)",
-  COMEDY: "radial-gradient(ellipse at 70% 40%, rgba(200,150,0,0.3), transparent 60%)",
-  DRAMA: "radial-gradient(ellipse at 70% 40%, rgba(20,80,50,0.4), transparent 60%)",
-  ROMANCE: "radial-gradient(ellipse at 70% 40%, rgba(130,50,150,0.4), transparent 60%)",
-  SCIENCE_FICTION: "radial-gradient(ellipse at 70% 40%, rgba(45,27,105,0.5), transparent 60%), radial-gradient(ellipse at 20% 70%, rgba(10,60,60,0.4), transparent 60%)",
-  SUSPENSE: "radial-gradient(ellipse at 70% 40%, rgba(20,30,60,0.5), transparent 60%)",
+  ACTION:
+    "radial-gradient(ellipse at 70% 40%, rgba(37,72,150,0.45), transparent 60%), radial-gradient(ellipse at 20% 70%, rgba(7,21,47,0.85), transparent 70%)",
+
+  THRILLER:
+    "radial-gradient(ellipse at 70% 40%, rgba(50,75,150,0.45), transparent 60%)",
+
+  HORROR:
+    "radial-gradient(ellipse at 60% 50%, rgba(8,18,40,0.75), transparent 60%)",
+
+  COMEDY:
+    "radial-gradient(ellipse at 70% 40%, rgba(244,201,93,0.22), transparent 60%)",
+
+  DRAMA:
+    "radial-gradient(ellipse at 70% 40%, rgba(30,80,120,0.4), transparent 60%)",
+
+  ROMANCE:
+    "radial-gradient(ellipse at 70% 40%, rgba(80,65,150,0.4), transparent 60%)",
+
+  SCIENCE_FICTION:
+    "radial-gradient(ellipse at 70% 40%, rgba(45,80,160,0.5), transparent 60%), radial-gradient(ellipse at 20% 70%, rgba(10,60,90,0.4), transparent 60%)",
+
+  SUSPENSE:
+    "radial-gradient(ellipse at 70% 40%, rgba(30,55,110,0.5), transparent 60%)",
 };
 
 interface HeroBillboardProps {
@@ -55,7 +70,10 @@ export function HeroBillboard({ movies }: HeroBillboardProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8 }}
           className="absolute inset-0"
-          style={{ background: "#141414" }}
+          style={{
+          background:
+            "linear-gradient(135deg, #0A1E42 0%, #07152F 55%, #050F25 100%)",
+        }}
         >
           <div className="absolute inset-0" style={{ backgroundImage: bg }} />
           {/* Subtle noise texture */}
@@ -69,8 +87,26 @@ export function HeroBillboard({ movies }: HeroBillboardProps) {
       </AnimatePresence>
 
       {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-background" />
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent" style={{ width: "55%" }} />
+      <div
+        className="
+          absolute inset-0
+          bg-gradient-to-b
+          from-transparent
+          via-[#07152F]/30
+          to-[#07152F]
+        "
+      />
+
+      <div
+        className="
+          absolute inset-0
+          bg-gradient-to-r
+          from-[#07152F]
+          via-[#07152F]/70
+          to-transparent
+        "
+        style={{ width: "60%" }}
+      />
 
       {/* Content */}
       <div className="relative z-10 px-12 pb-20 max-w-[700px]">

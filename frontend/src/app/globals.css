@@ -9,17 +9,21 @@
   --font-inter: 'Inter', sans-serif;
   --font-jetbrains: 'JetBrains Mono', monospace;
 
-  /* Red Cinema palette */
-  --color-primary: #E50914;
-  --color-primary-hover: #C11119;
-  --color-bg: #141414;
-  --color-surface: #1F1F1F;
-  --color-surface-2: #2A2A2A;
+  /* Wonderlight / Cinema palette */
+  --color-primary: #F4C95D;
+  --color-primary-hover: #FFD978;
+
+  --color-bg: #07152F;
+  --color-surface: #0D2147;
+  --color-surface-2: #14305D;
+
   --color-text-primary: #FFFFFF;
-  --color-text-secondary: #999999;
-  --color-border: #333333;
-  --color-success: #46D369;
-  --color-warning: #E6B616;
+  --color-text-secondary: #AAB9D6;
+
+  --color-border: #263F6B;
+
+  --color-success: #4FD18B;
+  --color-warning: #F4C95D;
 }
 
 * {
@@ -33,12 +37,28 @@ html {
 }
 
 body {
-  background-color: #141414;
+  background:
+    radial-gradient(
+      circle at 20% 0%,
+      rgba(46, 83, 160, 0.22),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(37, 72, 150, 0.18),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      #0A1E42 0%,
+      #07152F 45%,
+      #050F25 100%
+    );
+
+  background-attachment: fixed;
+
   color: #ffffff;
   font-family: 'Inter', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
 }
 
 /* Hide scrollbar globally */

@@ -40,12 +40,12 @@ export function MovieRow({ title, movies, showRank = false }: MovieRowProps) {
         {/* Left fade */}
         <div
           className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to right, #141414, transparent)" }}
+          style={{ background: "linear-gradient(to right, #07152F, transparent)" }}
         />
         {/* Right fade */}
         <div
           className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to left, #141414, transparent)" }}
+          style={{ background: "linear-gradient(to left, #07152F, transparent)" }}
         />
 
         {/* Scroll left btn */}
