@@ -1,4 +1,4 @@
-# 🎬 Red Cinema — Movie Reservation System
+# 🎬 Wonderlight — Movie Reservation System
 
 > A full-stack, production-grade cinema ticketing platform — book seats, manage theatres, and browse films with a Netflix-inspired UI.
 
@@ -27,7 +27,7 @@
 
 ## 🌟 Overview
 
-**Red Cinema** is a complete movie reservation system with:
+**Wonderlight** is a complete movie reservation system with:
 
 - 🔐 **JWT-based authentication** with role-based access control (User, Theatre Admin, Super Admin)
 - 🎥 **TMDB-integrated movie catalog** with posters, genres, and director metadata
@@ -207,4 +207,4 @@ For deeper technical details, see the individual READMEs:
 
 ---
 
-> Built with ❤️ using Spring Boot & Next.js · © 2026 Red Cinema
+> Built with ❤️ using Spring Boot & Next.js · © 2026 Wonderlight
