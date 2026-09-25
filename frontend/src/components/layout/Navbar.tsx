@@ -84,7 +84,7 @@ export function Navbar() {
         href="/"
         className="font-display text-3xl text-primary tracking-widest shrink-0 hover:opacity-90 transition-opacity"
       >
-        RED CINEMA
+        WONDERLIGHT
       </Link>
 
       {/* Nav Links */}

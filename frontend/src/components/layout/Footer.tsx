@@ -48,10 +48,10 @@ export function Footer() {
       {/* Bottom */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="font-display text-2xl text-primary tracking-widest">
-          RED CINEMA
+          WONDERLIGHT
         </div>
         <p className="text-text-secondary text-xs">
-          © {new Date().getFullYear()} Red Cinema. All rights reserved.
+          © {new Date().getFullYear()} Wonderlight. All rights reserved.
           <span className="mx-2">·</span>
           Built with Next.js 14 &amp; Spring Boot
         </p>

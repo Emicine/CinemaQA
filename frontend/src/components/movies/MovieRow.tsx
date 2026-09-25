@@ -28,7 +28,7 @@ export function MovieRow({ title, movies, showRank = false }: MovieRowProps) {
       {/* Header */}
       <div className="flex items-center justify-between px-12 mb-6">
         <h2 className="font-display text-section tracking-[0.05em] uppercase">
-          {title}
+          <span className="text-primary">✦</span> {title}
         </h2>
         <button className="text-xs text-text-secondary hover:text-white transition-colors">
           See All ›

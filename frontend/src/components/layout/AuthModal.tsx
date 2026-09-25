@@ -148,7 +148,7 @@ if (decoded?.sub && decoded?.userId) {
       toast.success(
         isLogin
           ? `Welcome back! 🎬`
-          : `Account created! Welcome to Red Cinema 🎉`
+          : `Account created! Welcome to Wonderlight 🎉`
       );
       closeAuthModal();
     } catch (error) {
@@ -185,7 +185,7 @@ if (decoded?.sub && decoded?.userId) {
 
             {/* Logo */}
             <div className="font-display text-2xl text-primary tracking-widest mb-6">
-              RED CINEMA
+              WONDERLIGHT
             </div>
 
             {/* Title */}
@@ -194,7 +194,7 @@ if (decoded?.sub && decoded?.userId) {
             </h2>
             <p className="text-text-secondary text-sm mb-8">
               {isLogin
-                ? "Welcome back to Red Cinema"
+                ? "Welcome back to Wonderlight"
                 : "Create your free account today"}
             </p>
 
@@ -260,7 +260,7 @@ if (decoded?.sub && decoded?.userId) {
             <div className="text-center mt-6 text-sm text-text-secondary">
               {isLogin ? (
                 <>
-                  New to Red Cinema?{" "}
+                  New to Wonderlight?{" "}
                   <button
                     onClick={toggleAuthMode}
                     className="text-white hover:underline font-medium"

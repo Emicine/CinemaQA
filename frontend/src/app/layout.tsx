@@ -7,12 +7,12 @@ import { AuthModal } from "@/components/layout/AuthModal";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  title: "Red Cinema — Book Movie Tickets",
+  title: "Wonderlight — Book Movie Tickets",
   description:
-    "Experience cinema at its finest. Book tickets for the latest blockbusters at Red Cinema.",
+    "Experience cinema at its finest. Book tickets for the latest blockbusters at Wonderlight.",
   keywords: ["movies", "cinema", "tickets", "booking", "IMAX", "now showing"],
   openGraph: {
-    title: "Red Cinema",
+    title: "Wonderlight",
     description: "Book movie tickets. Live the experience.",
     type: "website",
   },
