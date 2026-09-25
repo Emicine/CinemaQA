@@ -90,12 +90,20 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
         <div className="relative z-10 px-12 pb-12 flex items-end gap-10 w-full">
           {/* Poster */}
           <div
-            className="hidden md:flex shrink-0 w-44 h-64 rounded-lg items-center justify-center shadow-modal overflow-hidden"
+            className="hidden md:flex shrink-0 w-44 h-64 rounded-lg items-center justify-center shadow-modal overflow-hidden relative"
             style={{ background: posterBg }}
           >
-            <span className="font-display text-lg text-center px-3 leading-tight tracking-wide opacity-80">
-              {movie.movieName}
-            </span>
+            {movie.moviePosterUrl ? (
+              <img
+                src={movie.moviePosterUrl}
+                alt={`Poster de ${movie.movieName}`}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : (
+              <span className="font-display text-lg text-center px-3 leading-tight tracking-wide opacity-80">
+                {movie.movieName}
+              </span>
+            )}
           </div>
 
           {/* Info */}

@@ -155,14 +155,22 @@ export default function MoviesPage() {
                     className="w-full aspect-[2/3] rounded overflow-hidden relative mb-3 transition-transform duration-300 group-hover:scale-105 group-hover:shadow-card-hover"
                     style={{ background: GENRE_GRADIENTS[movie.movieGenre] ?? GENRE_GRADIENTS.DRAMA }}
                   >
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center">
-                      <span className="font-display text-base leading-tight tracking-wide opacity-80">
-                        {movie.movieName}
-                      </span>
-                      <span className="text-xs text-white/40 mt-1">
-                        {movie.movieReleaseDate?.slice(0, 4)}
-                      </span>
-                    </div>
+                    {movie.moviePosterUrl ? (
+                      <img
+                        src={movie.moviePosterUrl}
+                        alt={`Poster de ${movie.movieName}`}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center">
+                        <span className="font-display text-base leading-tight tracking-wide opacity-80">
+                          {movie.movieName}
+                        </span>
+                        <span className="text-xs text-white/40 mt-1">
+                          {movie.movieReleaseDate?.slice(0, 4)}
+                        </span>
+                      </div>
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300 flex items-center justify-center">
