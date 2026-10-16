@@ -27,7 +27,7 @@ COPY --from=builder /app/target/*.jar app.jar
 
 # Health-check endpoint (requires Spring Actuator)
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-    CMD wget -qO- http://localhost:8080/actuator/health || exit 1
+    CMD wget -qO- http://localhost:8080/api/movies/all || exit 1
 
 EXPOSE 8080
 
