@@ -1,4 +1,6 @@
 import requests
+import json
+from jsonschema import validate
 
 # URL de base de l'API CinemaQA
 BASE_URL = "http://localhost:8080"
@@ -83,3 +85,17 @@ def test_get_movies_ids_are_unique():
     # Vérifier que tous les identifiants sont uniques
     assert len(movie_ids) == len(set(movie_ids))
 
+# TEST 8 - Le schéma doit correspondre au schéma de réponse des films
+def test_get_movies_matches_json_schema():
+    # Arrange : charger le schéma JSON
+    with open("tests_api_pytest/schemas/movies.schema.json", encoding="utf-8") as schema_file:
+        schema = json.load(schema_file)
+
+    # Act : appeler l'API
+    response = requests.get(f"{BASE_URL}/api/movies/all", timeout=TIMEOUT )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Assert : vérifier la conformité au schéma
+    validate(instance=data, schema=schema)

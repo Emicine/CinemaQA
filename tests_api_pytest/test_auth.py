@@ -26,6 +26,7 @@ def test_login_success():
     assert data["authenticationToken"] is not None
     assert data["authenticationToken"] != ""
 
+
 # TEST 2 - Connexion avec de faux identifiants
 def test_login_wrong_password():
     payload = {
@@ -90,3 +91,19 @@ def test_login_missing_required_field(payload):
 
     # Assert : vérifier que la requête est refusée
     assert response.status_code == 400
+
+
+# TEST 7 - Tester un utilisateur qui n'existe pas
+def test_login_unknown_user():
+    # Arrange : utiliser un nom d'utilisateur inexistant
+    payload = {
+        "userName": "utilisateur_inexistant_98765",
+        "password": "mot_de_passe_quelconque"
+    }
+
+    # Act : envoyer la requête de connexion
+    response = requests.post(f"{BASE_URL}/auth/login", json=payload, timeout=TIMEOUT)
+
+    # Assert : vérifier que la connexion est refusée
+    assert response.status_code == 401
+

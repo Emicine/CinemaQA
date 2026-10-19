@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required": ["pageData"],
+  "properties": {
+    "pageData": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["movieId", "movieName"],
+        "properties": {
+          "movieId": {},
+          "movieName": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
