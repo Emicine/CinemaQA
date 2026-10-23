@@ -1,0 +1,24 @@
+{
+  "name": "cinemaqa",
+  "version": "1.0.0",
+  "description": "> A full-stack, production-grade cinema ticketing platform — book seats, manage theatres, and browse films with a Netflix-inspired UI.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Emicine/CinemaQA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Emicine/CinemaQA/issues"
+  },
+  "homepage": "https://github.com/Emicine/CinemaQA#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.5",
+    "dotenv": "^18.0.9"
+  }
+}
