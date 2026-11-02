@@ -17,7 +17,7 @@ test('TC-012 - Connexion avec identifiants valides', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'SIGN IN' })).toBeHidden();
 });
 
-test('TC-013 - Connexion refusée avec un mot de passe incorrect', async ({ page }) => {
+test('TC-013 - Connexion refusée avec des identifiants invalides', async ({ page }) => {
   const username = process.env.E2E_USERNAME;
   const password = 'MotDePasseVolontairementIncorrect123!';
 
@@ -28,6 +28,5 @@ test('TC-013 - Connexion refusée avec un mot de passe incorrect', async ({ page
   await loginPage.open();
   await loginPage.login(username!, password);
 
-  // À adapter au message d'erreur réellement affiché par Wonderlight.
   await expect(loginPage.errorMessage).toBeVisible();
 });

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { HomePage } from './pages/HomePage';
 
-test('la section Now Showing est visible lorsque des films sont disponibles', async ({ page }) => {
+test('Afficher la section Now Showing lorsque des films sont disponibles', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await homePage.open();
