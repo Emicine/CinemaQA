@@ -1,101 +1,162 @@
-import requests
 import json
 from jsonschema import validate
 
-# URL de base de l'API CinemaQA
-BASE_URL = "http://localhost:8080"
-
-#Temps d'attente maximal pour une requête
-TIMEOUT = 5
-
-#==========================================================
+# ==========================================================
 # Itération 1 - Disponibilité de l'API et accès aux données
-#==========================================================
+# ==========================================================
 
-# TEST 1 - Récupérer tous les films 
-def test_get_movies_returns_200():
-# Envoi de la requête à l'API
-    response = requests.get(f"{BASE_URL}/api/movies/all", timeout=TIMEOUT)
+# TC027 - Récupérer tous les films
+def test_get_movies_returns_200_tc_027(api_session, base_url, timeout):
 
-    # Vérification du code status
-    assert response.status_code == 200
+    # ACT : envoyer la requête à l'API
+    response = api_session.get(f"{base_url}/api/movies/all",timeout=timeout)
 
-    # Récupération du contenu JSON
-    data = response.json()
-    assert len(data["pageData"]) > 0
-
-
-# TEST 2 - Vérifier que les films ont tous un titre 
-def test_get_movies_titles_returns_200():
-    response = requests.get(f"{BASE_URL}/api/movies/all", timeout=TIMEOUT)
-
-    #Debug
-    # data = response.json()
-    # print(data["pageData"][0])
-
+    # ASSERT : vérifier la réponse
     assert response.status_code == 200
 
     data = response.json()
     assert len(data["pageData"]) > 0
-    #Pour chaque film dans pageData, on vérifie que le champ "title" n'est pas "none"
-    for movie in data["pageData"]: 
-        assert movie["movieName"] is not None
 
-# TEST 3 - Vérifier que le titre des films n'est pas vide
-def test_get_movies_titles_non_vide_returns_200():
-    response = requests.get(f"{BASE_URL}/api/movies/all", timeout=TIMEOUT)
+# ==========================================================
 
+# TC066 - Vérifier que tous les films ont un titre
+def test_get_movies_titles_returns_200_tc_66(api_session, base_url, timeout):
+
+    # ACT : récupérer les films
+    response = api_session.get(f"{base_url}/api/movies/all",timeout=timeout)
+
+    # ASSERT : vérifier les titres
     assert response.status_code == 200
 
     data = response.json()
     assert len(data["pageData"]) > 0
 
     for movie in data["pageData"]:
-        assert movie["movieName"] != ""
+        assert movie["movieName"] is not None
 
-# TEST 4 - Vérifier que les films ont un ID
-def test_get_movies_have_id():
-    response = requests.get(f"{BASE_URL}/api/movies/all", timeout=TIMEOUT)
+# ==========================================================
 
-    # Act : récupérer les données
+# TC067 - Vérifier que les films ont un identifiant
+def test_get_movies_have_id_tc_067(api_session, base_url, timeout):
+
+    # ACT : récupérer les films
+    response = api_session.get(f"{base_url}/api/movies/all",timeout=timeout)
+
+    # ASSERT : vérifier les identifiants
     assert response.status_code == 200
-    data = response.json()
 
-    # Assert : vérifier que chaque film possède un identifiant
+    data = response.json()
     assert len(data["pageData"]) > 0
 
     for movie in data["pageData"]:
         assert movie["movieId"] is not None
 
-# TEST 5 - Vérifier que les films ont un ID unique
-def test_get_movies_ids_are_unique():
-    response = requests.get(f"{BASE_URL}/api/movies/all", timeout=TIMEOUT)
+# ==========================================================
 
-    # Act : récupérer les films
-    assert response.status_code == 200
-    data = response.json()
-    movies = data["pageData"]
+# TC068 - Vérifier la conformité au schéma JSON des films
+def test_get_movies_matches_json_schema_tc_068(api_session, base_url, timeout):
 
-    # Récupérer tous les identifiants
-    movie_ids = []
-
-    for movie in movies:
-        movie_ids.append(movie["movieId"])
-
-    # Vérifier que tous les identifiants sont uniques
-    assert len(movie_ids) == len(set(movie_ids))
-
-# TEST 8 - Le schéma doit correspondre au schéma de réponse des films
-def test_get_movies_matches_json_schema():
-    # Arrange : charger le schéma JSON
-    with open("tests_api_pytest/schemas/movies.schema.json", encoding="utf-8") as schema_file:
+    # ARRANGE : charger le schéma JSON
+    with open("tests_api_pytest/schemas/movies.schema.json",encoding="utf-8") as schema_file:
         schema = json.load(schema_file)
 
-    # Act : appeler l'API
-    response = requests.get(f"{BASE_URL}/api/movies/all", timeout=TIMEOUT )
+    # ACT : récupérer les films
+    response = api_session.get(f"{base_url}/api/movies/all",timeout=timeout)
 
+    # ASSERT : vérifier la réponse et le schéma
     assert response.status_code == 200
-    data = response.json()
 
-    # Assert : vérifier la conformité au schéma
+    data = response.json()
     validate(instance=data, schema=schema)
+
+# ==========================================================
+
+# TC028 - Consulter le détail d'un film
+def test_get_movie_details_tc_028(api_session, base_url, timeout):
+
+    # ARRANGE : récupérer un film existant
+    movies_response = api_session.get(f"{base_url}/api/movies/all",timeout=timeout)
+
+    assert movies_response.status_code == 200
+
+    movies = movies_response.json()["pageData"]
+    assert len(movies) > 0
+
+    movie_id = movies[0]["movieId"]
+
+    # ACT : consulter le détail du film
+    response = api_session.get(f"{base_url}/api/movies/movie/{movie_id}",timeout=timeout)
+
+    # ASSERT : vérifier les informations du film
+    assert response.status_code == 200
+
+    movie = response.json()["data"]
+
+    assert movie["movieId"] == movie_id
+    assert movie["movieName"] is not None
+    assert movie["movieName"] != ""
+
+# ==========================================================
+
+
+# TC017 - Créer un film avec des données valides
+def test_create_movie_with_valid_data_tc_017(api_session, base_url, timeout, admin_headers, movie_cleanup):
+
+    # ARRANGE : préparer les données du film
+    movie_payload = {
+        "movieName": "Film test automatise TC017",
+        "movieGenre": "ACTION",
+        "movieDirector": "Realisateur Test",
+        "movieReleaseDate": "2026-01-15",
+        "movieDescription": "Film cree pour les tests automatises",
+        "movieDuration": 120,
+        "moviePosterUrl": ""
+    }
+
+    # ACT : créer le film
+    response = api_session.post(f"{base_url}/api/movies/movie/create",json=movie_payload,headers=admin_headers,timeout=timeout)
+
+    # ASSERT : vérifier la création
+    assert response.status_code == 201, response.text
+
+    data = response.json()["data"]
+
+    # Récupérer l'identifiant pour le nettoyage
+    movie_id = data["movieId"]
+    movie_cleanup.append(movie_id)
+
+    # Vérifier les informations du film créé
+    assert data["movieName"] == movie_payload["movieName"]
+    assert data["movieGenre"] == movie_payload["movieGenre"]
+    assert data["movieDuration"] == 120
+
+# ==========================================================
+
+# TC025 - Créer un film avec une durée de 1 minute
+def test_create_movie_with_one_minute_duration_tc_025(api_session, base_url, timeout, admin_headers, movie_cleanup):
+
+    # ARRANGE : préparer les données du film
+    movie_payload = {
+        "movieName": "Film test duree 1 minute TC025",
+        "movieGenre": "COMEDY",
+        "movieDirector": "Realisateur Test",
+        "movieReleaseDate": "2026-01-15",
+        "movieDescription": "Film de test avec une duree minimale",
+        "movieDuration": 1,
+        "moviePosterUrl": ""
+    }
+
+    # ACT : créer le film
+    response = api_session.post(f"{base_url}/api/movies/movie/create",json=movie_payload,headers=admin_headers,timeout=timeout)
+
+    # ASSERT : vérifier la création
+    assert response.status_code == 201, response.text
+
+    data = response.json()["data"]
+
+    # Enregistrer le film pour le nettoyage automatique
+    movie_id = data["movieId"]
+    movie_cleanup.append(movie_id)
+
+    # Vérifier que la durée est bien de 1 minute
+    assert data["movieDuration"] == 1

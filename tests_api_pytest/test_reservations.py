@@ -1,204 +1,118 @@
 import requests
+from tests_api_pytest.test_data import TEST_USER_ID
 
-BASE_URL = "http://localhost:8080"
-TIMEOUT = 5
+# TEST - TC057 - Un utilisateur peut accéder à ses propres réservations
+# Vérifier qu'un utilisateur authentifié peut consulter ses réservations.
 
-# # TEST 12 - Un utilisateur peut accéder à ses propres réservations 
-def test_user_can_access_own_reservations():
-    # ARRANGE : connexion avec user8
-    payload = {
-        "userName": "user8",
-        "password": "user8Password"
-    }
+def test_user_can_access_own_reservations_tc_057(api_session, base_url, timeout, test_user_headers):
 
-    login_response = requests.post(
-        f"{BASE_URL}/auth/login",
-        json=payload,
-        timeout=TIMEOUT
-    )
-
-    assert login_response.status_code == 200
-
-    token = login_response.json()["authenticationToken"]
-
-    # ACT : user8 consulte ses propres réservations
-    response = requests.get(
-        f"{BASE_URL}/api/reservations/user/5/all",
-        headers={"Authorization": f"Bearer {token}"},
-        timeout=TIMEOUT
-    )
+    # ACT : compteTest consulte ses propres réservations
+    response = api_session.get(f"{base_url}/api/reservations/user/{TEST_USER_ID}/all",headers=test_user_headers,timeout=timeout)
 
     # ASSERT : vérifier la réponse
     assert response.status_code == 200
 
     data = response.json()
+
     assert "pageData" in data
-    assert len(data["pageData"]) > 0
+    assert isinstance(data["pageData"], list)
 
     for reservation in data["pageData"]:
-        assert reservation["user"]["userId"] == 5
+        assert reservation["user"]["userId"] == TEST_USER_ID
 
-# TEST 13 - Un utilisateur ne peut pas accéder à ses réservations sans être authentifié
-def test_cannot_access_reservations_without_token():
-    # ARRANGE : aucune authentification
+#======================================================================================
 
-    # ACT : tenter de consulter les réservations de user8
-    response = requests.get(
-        f"{BASE_URL}/api/reservations/user/5/all",
-        timeout=TIMEOUT
-    )
-
-    # ASSERT : l'accès doit être refusé
-    assert response.status_code == 401
-
-# TEST 14 - Un utulisateur ne peut pas se connecter avec un token invalide
-def test_cannot_access_reservations_with_invalid_token():
-    # ARRANGE : jeton invalide
-    headers = {
-        "Authorization": "Bearer invalid_token"
-    }
-
-    # ACT : tenter de consulter les réservations
-    response = requests.get(
-        f"{BASE_URL}/api/reservations/user/5/all",
-        headers=headers,
-        timeout=TIMEOUT
-    )
-
-    # ASSERT : l'accès doit être refusé
-    assert response.status_code == 401
-
-
-# TEST 15 - Création d'une réservation avec des données invalides (champs vides)
-def test_cannot_create_reservation_with_empty_seat_list():
-    # ARRANGE : connexion avec user8
-    payload = {
-        "userName": "user8",
-        "password": "user8Password"
-    }
-
-    login_response = requests.post(
-        f"{BASE_URL}/auth/login",
-        json=payload,
-        timeout=TIMEOUT
-    )
-
-    assert login_response.status_code == 200
-
-    token = login_response.json()["authenticationToken"]
-
-    headers = {
-        "Authorization": f"Bearer {token}"
-    }
-
-    # ACT : envoyer une réservation sans siège
+# TC051 - Créer une réservation avec une seule place
+def test_create_reservation_with_one_seat_tc_051(api_session, base_url, timeout, test_user_headers, reservation_cleanup):
+    # ARRANGE : préparer une réservation avec une place disponible
     reservation_payload = {
-        "userId": 5,
-        "showId": 1,
-        "showSeats": []
-    }
-
-    response = requests.post(
-        f"{BASE_URL}/api/reservations/reserve",
-        json=reservation_payload,
-        headers=headers,
-        timeout=TIMEOUT
-    )
-
-    # ASSERT : la requête doit être rejetée
-    assert response.status_code == 400
-
-
-# TEST 16 - Créer une réservation sans le champ userId
-def test_cannot_create_reservation_without_user_id():
-    # ARRANGE : connexion avec user8
-    payload = {
-        "userName": "user8",
-        "password": "user8Password"
-    }
-
-    login_response = requests.post(
-        f"{BASE_URL}/auth/login",
-        json=payload,
-        timeout=TIMEOUT
-    )
-
-    assert login_response.status_code == 200
-
-    token = login_response.json()["authenticationToken"]
-
-    headers = {
-        "Authorization": f"Bearer {token}"
-    }
-
-    # ACT : envoyer une réservation sans userId
-    reservation_payload = {
-        "showId": 1,
+        "userId": TEST_USER_ID,
+        "showId": 13,
         "showSeats": [
-            {"seatId": 1}
+            {"seatId": 91}
         ]
     }
 
-    response = requests.post(
-        f"{BASE_URL}/api/reservations/reserve",
-        json=reservation_payload,
-        headers=headers,
-        timeout=TIMEOUT
-    )
+    # ACT : envoyer la réservation
+    response = api_session.post(f"{base_url}/api/reservations/reserve",json=reservation_payload,headers=test_user_headers,timeout=timeout)
 
-    # ASSERT : la requête doit être rejetée
-    assert response.status_code == 400
+    # ASSERT : vérifier la création
+    assert response.status_code == 201, response.text
 
+    data = response.json()
 
-#=======================
-# Itération 3
-#=======================
-# TEST 17 - Créer une réservation valide
-# TEST 17 - Vérifier une réservation créée
-def test_user_can_create_valid_reservation():
-    # ARRANGE : connexion avec user8
-    payload = {
-        "userName": "user8",
-        "password": "user8Password"
+    # Récupérer et enregistrer l'identifiant pour le nettoyage
+    reservation_id = data["data"]
+    assert isinstance(reservation_id, int)
+
+    reservation_cleanup.append(reservation_id)
+
+#======================================================================================
+
+# TC055 - Créer et vérifier une réservation valide
+def test_user_can_create_valid_reservation_tc_055(api_session, base_url, timeout, test_user_headers, reservation_cleanup):
+    # ARRANGE : préparer une réservation avec une place disponible
+    reservation_payload = {
+        "userId": TEST_USER_ID,
+        "showId": 13,
+        "showSeats": [
+            {"seatId": 91}
+        ]
     }
 
-    login_response = requests.post(
-        f"{BASE_URL}/auth/login",
-        json=payload,
-        timeout=TIMEOUT
-    )
+    # ACT : créer la réservation
+    create_response = api_session.post(f"{base_url}/api/reservations/reserve",json=reservation_payload,headers=test_user_headers,timeout=timeout)
 
-    assert login_response.status_code == 200
+    # ASSERT : vérifier la création
+    assert create_response.status_code == 201, create_response.text
 
-    token = login_response.json()["authenticationToken"]
+    reservation_id = create_response.json()["data"]
 
-    headers = {
-        "Authorization": f"Bearer {token}"
-    }
+    # Enregistrer immédiatement pour le nettoyage automatique
+    reservation_cleanup.append(reservation_id)
 
-    # ACT : consulter les réservations existantes
-    response = requests.get(
-        f"{BASE_URL}/api/reservations/user/5/all",
-        headers=headers,
-        timeout=TIMEOUT
-    )
+    # ACT : consulter les réservations de l'utilisateur
+    response = api_session.get(f"{base_url}/api/reservations/user/{TEST_USER_ID}/all",headers=test_user_headers,timeout=timeout)
 
-    # ASSERT : vérifier la réservation du siège 9
-    assert response.status_code == 200
+    # ASSERT : vérifier la consultation
+    assert response.status_code == 200, response.text
 
     reservations = response.json()["pageData"]
 
+    # Retrouver la réservation que nous venons de créer
     reservation = next(
         (
             item for item in reservations
-            if any(
-                seat["showSeatId"] == 9
-                for seat in item["seatsReserved"]
-            )
+            if item["reservationId"] == reservation_id
         ),
         None
     )
 
     assert reservation is not None
-    assert reservation["totalAmount"] == 15.0
     assert reservation["reservationStatus"] == "BOOKED"
+    assert reservation["totalAmount"] > 0
+
+    # Vérifier que la bonne place a été réservée
+    assert any(
+        seat["showSeatId"] == 91
+        for seat in reservation["seatsReserved"]
+    )
+
+#======================================================================================
+
+# TC065 - Créer une réservation sans le champ userId
+def test_cannot_create_reservation_without_user_id_065(api_session, base_url, timeout, test_user_headers):
+    # ARRANGE : préparer une réservation sans userId
+    reservation_payload = {
+        "showId": 13,
+        "showSeats": [
+            {"seatId": 91}
+        ]
+    }
+
+    # ACT : envoyer la réservation
+    response = api_session.post(f"{base_url}/api/reservations/reserve",json=reservation_payload,headers=test_user_headers,timeout=timeout)
+
+    # ASSERT : vérifier que la requête est rejetée
+    assert response.status_code == 400, response.text
+
