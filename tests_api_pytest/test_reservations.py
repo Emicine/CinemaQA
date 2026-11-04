@@ -77,9 +77,10 @@ def test_user_can_create_valid_reservation_tc_055(api_session, base_url, timeout
     # ASSERT : vérifier la consultation
     assert response.status_code == 200, response.text
 
+    # Rechercher la réservation dans toutes les pages
     reservations = response.json()["pageData"]
 
-    # Retrouver la réservation que nous venons de créer
+
     reservation = next(
         (
             item for item in reservations
@@ -88,13 +89,40 @@ def test_user_can_create_valid_reservation_tc_055(api_session, base_url, timeout
         None
     )
 
-    assert reservation is not None
+    page = 0
+
+    while reservation is None:
+        page += 1
+
+        response = api_session.get(
+            f"{base_url}/api/reservations/user/{TEST_USER_ID}/all",
+            params={"page": page},
+            headers=test_user_headers,
+            timeout=timeout
+        )
+
+        assert response.status_code == 200, response.text
+
+        reservations = response.json()["pageData"]
+
+        reservation = next(
+            (
+                item for item in reservations
+                if item["reservationId"] == reservation_id
+            ),
+            None
+        )
+
+        # Éviter une boucle infinie
+        if not reservations:
+            break
+
+    assert reservation is not None, (f"La réservation {reservation_id} est introuvable dans les pages consultées.")
     assert reservation["reservationStatus"] == "BOOKED"
     assert reservation["totalAmount"] > 0
 
     # Vérifier que la bonne place a été réservée
-    assert any(
-        seat["showSeatId"] == 91
+    assert any(seat["showSeatId"] == 91
         for seat in reservation["seatsReserved"]
     )
 
@@ -116,3 +144,65 @@ def test_cannot_create_reservation_without_user_id_065(api_session, base_url, ti
     # ASSERT : vérifier que la requête est rejetée
     assert response.status_code == 400, response.text
 
+
+#======================================================================================
+# TC-054 - Vérifier le calcul du montant total pour deux places
+def test_reservation_total_amount_two_seats_tc_054(api_session,base_url,timeout,test_user_headers,reservation_cleanup):
+    # ARRANGE : réserver deux places de la séance 13
+    reservation_payload = {"userId": TEST_USER_ID,"showId": 13,"showSeats": [{"seatId": 91},{"seatId": 92}]}
+
+    # ACT : créer la réservation
+    create_response = api_session.post(f"{base_url}/api/reservations/reserve",json=reservation_payload,headers=test_user_headers,timeout=timeout)
+
+    # ASSERT : vérifier la création
+    assert create_response.status_code == 201, create_response.text
+
+    reservation_id = create_response.json()["data"]
+
+    # Enregistrer immédiatement pour le nettoyage automatique
+    reservation_cleanup.append(reservation_id)
+
+    # ACT : récupérer toutes les pages de réservations
+    response = api_session.get(f"{base_url}/api/reservations/user/{TEST_USER_ID}/all", params={"page": 0, "pageSize": 10},headers=test_user_headers,timeout=timeout)
+
+    assert response.status_code == 200, response.text
+
+    first_page = response.json()
+    reservations = first_page["pageData"]
+
+    total_pages = first_page["totalPages"]
+
+    for page in range(1, total_pages):
+        response = api_session.get(f"{base_url}/api/reservations/user/{TEST_USER_ID}/all",params={"page": page, "pageSize": 10},headers=test_user_headers, timeout=timeout)
+
+        assert response.status_code == 200, response.text
+        reservations.extend(response.json()["pageData"])
+
+    # Retrouver la réservation créée
+    reservation = next(
+        (
+            item for item in reservations
+            if item["reservationId"] == reservation_id
+        ),None
+    )
+
+    assert reservation is not None, (f"Réservation {reservation_id} introuvable")
+
+    # Vérifier que deux places ont bien été réservées
+    seats = reservation["seatsReserved"]
+
+    assert len(seats) == 2
+
+    # Calculer le montant attendu à partir du prix des deux places
+    expected_total = sum(seat["seat"]["seatPrice"]for seat in seats)
+
+    actual_total = reservation["totalAmount"]
+    print("\n========== TC-054 ==========")
+    print("ID réservation :", reservation_id)
+    print("Prix des places :", [seat["seat"]["seatPrice"] for seat in seats])
+    print("Montant attendu :", expected_total)
+    print("Montant calculé par le backend :", actual_total)
+    print("============================")
+
+    # ASSERT : vérifier le calcul du montant total
+    assert abs(actual_total - expected_total) < 0.01, (f"Montant incorrect : attendu {expected_total}, "f"obtenu {actual_total}")

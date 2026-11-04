@@ -3,6 +3,7 @@ import pytest
 import requests
 from tests_api_pytest.test_data import TEST_USER_CREDENTIALS
 from tests_api_pytest.test_data import ADMIN_CREDENTIALS
+from tests_api_pytest.test_data import SECOND_TEST_USER_CREDENTIALS
 
 # # os = Lire une variable d'environnement.
 # # os.getenv(...) utilise http://localhost:8080 par défaut, mais permet de changer d'adresse sans modifier le code.
@@ -97,3 +98,16 @@ def theatre_cleanup(api_session, base_url, timeout, admin_headers):
     for theatre_id in theatre_ids:
         response = api_session.delete(f"{base_url}/api/theatres/theatre/{theatre_id}",headers=admin_headers,timeout=timeout)
         assert response.status_code == 200, response.text
+
+
+@pytest.fixture
+def second_test_user_headers(api_session, base_url, timeout):
+
+    # Connexion avec le deuxième compte
+    response = api_session.post(f"{base_url}/auth/login",json=SECOND_TEST_USER_CREDENTIALS,timeout=timeout)
+
+    assert response.status_code == 200, response.text
+
+    token = response.json()["authenticationToken"]
+
+    return {"Authorization": f"Bearer {token}"}

@@ -160,3 +160,26 @@ def test_create_movie_with_one_minute_duration_tc_025(api_session, base_url, tim
 
     # Vérifier que la durée est bien de 1 minute
     assert data["movieDuration"] == 1
+
+
+# ==========================================================
+# TC-020 - Créer un film sans renseigner le genre
+# ==========================================================
+
+def test_create_movie_without_genre_tc_020(api_session, base_url, timeout, admin_headers):
+
+    # ARRANGE : préparer un film sans genre
+    movie_payload = {
+        "movieName": "Film test TC020",
+        "movieDirector": "Realisateur Test",
+        "movieReleaseDate": "2026-01-15",
+        "movieDescription": "Film sans genre",
+        "movieDuration": 120,
+        "moviePosterUrl": ""
+    }
+
+    # ACT : envoyer la requête
+    response = api_session.post(f"{base_url}/api/movies/movie/create",json=movie_payload,headers=admin_headers,timeout=timeout)
+
+    # ASSERT : le genre est obligatoire
+    assert response.status_code == 400, response.text
